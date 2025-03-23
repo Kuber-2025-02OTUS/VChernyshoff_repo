@@ -5,10 +5,9 @@ metadata:
   namespace: homework
 spec:
   storageClassName: "hw" # Empty string must be explicitly set otherwise default StorageClass will be set
-  volumeName: hw-pvc
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
-      storage: 1Gi
+      storage: 100Mi
 ---

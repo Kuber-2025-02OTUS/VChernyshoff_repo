@@ -56,6 +56,8 @@ spec:
               mountPath: "/init"
       volumes:
         - name: hw-pvc
+          persistentVolumeClaim:
+              claimName: hw-pvc
         - name: hw-configmap
           configMap:
             name: hw-configmap
