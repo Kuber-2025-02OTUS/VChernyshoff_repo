@@ -52,13 +52,17 @@ spec:
             - name: hw-pvc
               mountPath: "/init"
         - name: get-metrics
-          image: busybox:1.28
+          image: nginx:latest
           command: 
             - sh
             - -c
             - |
-              TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
-              Mwget -O /init/metrics.html --no-check-certificate --header "Authorization: Bearer ${TOKEN}" "https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT}/metrics" || echo "failed get metrics" > /init/metrics.html
+              APISERVER=https://kubernetes.default.svc
+              SERVICEACCOUNT=/var/run/secrets/kubernetes.io/serviceaccount
+              NAMESPACE=$(cat ${SERVICEACCOUNT}/namespace)
+              TOKEN=$(cat ${SERVICEACCOUNT}/token)
+              CACERT=${SERVICEACCOUNT}/ca.crt
+              curl --cacert ${CACERT} --header "Authorization: Bearer ${TOKEN}" -X GET "${APISERVER}/metrics" -o /init/metrics.html || echo "failed" > /init/metrics.html
 
           volumeMounts:
             - name: hw-pvc

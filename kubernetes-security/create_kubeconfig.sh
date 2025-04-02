@@ -1,15 +1,10 @@
 #!/bin/bash
 
 export SA_SECRET_TOKEN=$(kubectl get secret/cd-token -o=go-template='{{.data.token}}' | base64 --decode)
-
 export CLUSTER_NAME=$(kubectl config current-context)
-
 export CURRENT_CLUSTER=$(kubectl config view --raw -o=go-template='{{range .contexts}}{{if eq .name "'''${CLUSTER_NAME}'''"}}{{ index .context "cluster" }}{{end}}{{end}}')
-
 export CLUSTER_CA_CERT=$(kubectl config view --raw -o=go-template='{{range .clusters}}{{if eq .name "'''${CURRENT_CLUSTER}'''"}}"{{with index .cluster "certificate-authority-data" }}{{.}}{{end}}"{{ end }}{{ end }}')
-
 export CLUSTER_ENDPOINT=$(kubectl config view --raw -o=go-template='{{range .clusters}}{{if eq .name "'''${CURRENT_CLUSTER}'''"}}{{ .cluster.server }}{{end}}{{ end }}')
-
 
 
 cat << EOF > cd_kubeconfig
