@@ -1,0 +1,4 @@
+Готово!
+https://homework.otus - основной файл index.html
+https://homework.otus/conf/key1 - содержимое файла /homework/conf/key1
+http://homework.otus/metrics.html - метрики, полученные при запуске пода.
