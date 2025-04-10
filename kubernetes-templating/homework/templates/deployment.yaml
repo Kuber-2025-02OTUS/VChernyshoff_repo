@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.namespace }} # homework
+  name: {{ .Chart.Name }}-deployment
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: {{ .Values.rollingUpdate.maxUnavailable }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      # nodeSelector:
+      #   homework: "true"
+      serviceAccountName: {{ .Values.serviceAccount }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.container.image.name }}:{{ .Values.container.image.tag }}
+          ports:
+          - containerPort: 8000
+            #- containerPort: {{ .Values.container.port }} #  mapping values are not allowed in this context 
+          {{- if .Values.readinessProbe.enabled -}}
+          readinessProbe:
+            httpGet:
+              path: /index.html
+              port: {{ .Values.container.port }}
+            initialDelaySeconds: 0
+            periodSeconds: 5
+          {{- end }} 
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "rm", "-f", "/homework/index.html" ]
+          volumeMounts:
+            - name: hw-pvc
+              mountPath: "/homework"
+            - name: nginx-configmap
+              mountPath: /etc/nginx/conf.d/
+            - name: hw-configmap
+              mountPath: /homework/conf
+      initContainers:
+        - name: download-static
+          image: busybox:1.28
+          command: 
+              - wget
+              - "-O"
+              - "/init/index.html"
+              - http://info.cern.ch
+          volumeMounts:
+            - name: hw-pvc
+              mountPath: "/init"
+      volumes:
+        - name: hw-pvc
+          persistentVolumeClaim:
+              claimName: hw-pvc
+        - name: hw-configmap
+          configMap:
+            name: hw-configmap
+        - name: nginx-configmap
+          configMap:
+            name: nginx-configmap
+            items:
+            - key: default.conf
+              path: default.conf

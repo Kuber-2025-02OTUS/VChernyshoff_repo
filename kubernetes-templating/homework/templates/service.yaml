@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "homework.fullname" . }}-service # nginx-service
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "homework.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 8000
+      protocol: {{ .Values.service.protocol }}
+  selector:
+    app: {{ .Chart.Name }}
+
+
+
+
+# spec:
+#   selector:
+#     app: nginx
+
