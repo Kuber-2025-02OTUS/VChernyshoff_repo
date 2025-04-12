@@ -1,0 +1,53 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  # name must match the spec fields below, and be in the form: <plural>.<group>
+  name: mysql.otus.homework
+spec:
+  # group name to use for REST API: /apis/<group>/<version>
+  group: otus.homework
+  scope: Namespaced
+  names:
+    # kind is normally the CamelCased singular type. Your resource manifests use this.
+    kind: MySQL
+    # plural name to be used in the URL: /apis/<group>/<version>/<plural>
+    plural: mysql
+    # singular name to be used as an alias on the CLI and for display
+    singular: mysql
+  # list of versions supported by this CustomResourceDefinition
+  versions:
+    - name: v1
+      # Each version can be enabled/disabled by Served flag.
+      served: true
+      # One and only one version must be marked as the storage version.
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          required:
+          - spec
+          properties:
+            spec:
+              type: object
+              required:
+                - image
+                - database
+                - password
+                - storage_size
+              properties:
+                image:
+                  type: string
+                  minLength: 1
+                database:
+                  type: string
+                  minLength: 1
+                password:
+                  type: string
+                  minLength: 3
+                storage_size:
+                  type: string
+                  minLength: 2
+              x-kubernetes-preserve-unknown-fields: true
+            status:
+              type: object
+              x-kubernetes-preserve-unknown-fields: true
