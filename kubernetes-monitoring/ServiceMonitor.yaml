@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: homework-servicemonitor
+  namespace: homework
+  labels:
+    app: homework-servicemonitor
+spec:
+  selector:
+    matchLabels:
+      app: nginx  # Лейблы, соответствующие вашим подам
+  namespaceSelector:
+    matchNames:
+      - homework  # Укажите имя пространства имен, в котором находятся ваши поды
+  endpoints:
+    - port: "9113"  # Имя порта, указанное в сервисе
+      path: /metrics  # Путь для получения метрик
+      interval: 30s  # Интервал сбора метрик
