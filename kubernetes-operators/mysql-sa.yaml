@@ -22,7 +22,9 @@ rules:
   - apiGroups: [""] # Ядро Kubernetes API
     resources: ["services", "persistentvolumes", "persistentvolumeclaims"]
     verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
-
+  - apiGroups: ["apps"] # Deployment, StatefulSet
+    resources: ["deployments", "statefulsets"]
+    verbs: ["create", "delete", "get", "list", "watch", "update", "patch"]
 
 
 ---
