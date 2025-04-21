@@ -35,7 +35,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: mysql-operator
-  namespace: default
+  namespace: homework
 roleRef:
   kind: ClusterRole
   name: mysql-operator-role
